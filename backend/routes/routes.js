@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { signup, login } from "../controllers/auth.controller.js";
 import refreshAccessToken from "../utils/refreshAccessToken.js";
-import { createTask, getSingleTask, getTasks } from "../controllers/task.controller.js";
+import { createTask, getSingleTask, getTasks, updateTask } from "../controllers/task.controller.js";
 import authenticate from "../utils/authenticate.js";
 
 const router = Router();
@@ -15,5 +15,6 @@ router.post("/refresh-token", refreshAccessToken);
 router.post("/tasks", authenticate, createTask);
 router.get("/tasks", authenticate, getTasks);
 router.get("/tasks/:id", authenticate, getSingleTask)
+router.patch("/tasks/:id",authenticate, updateTask)
 
 export default router;

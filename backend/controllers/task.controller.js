@@ -118,4 +118,40 @@ const getSingleTask = async (req, res) => {
   }
 };
 
-export { createTask, getTasks, getSingleTask };
+const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, status, priority, due_date } = req.body;
+    const [updatedTask] = await client`
+            UPDATE tasks
+            SET 
+                title = ${title}, 
+                description = ${description}, 
+                status = ${status}, 
+                priority = ${priority}, 
+                due_date = ${due_date},
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ${id}
+            RETURNING id, title, description, status, priority, due_date;
+        `;
+    if (!updatedTask) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found or update permission denied!!",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: `Task "${updatedTask.title}" updated successfully!!`,
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error("Update task failed:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while updating the task!!",
+    });
+  }
+};
+
+export { createTask, getTasks, getSingleTask, updateTask };
