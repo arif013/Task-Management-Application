@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = 3000 || process.env.PORT;
+const PORT = 5000 || process.env.PORT;
 //Connect db
 // const client = neon(process.env.DATABASE_URL);
 

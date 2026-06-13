@@ -93,13 +93,14 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
+    // console.log(`req.body`, req.body);
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are requied" });
     }
     const user = await client`SELECT * FROM users WHERE email = ${email}`;
     // console.log(`user:`, user[0].username);
-    if (!user) {
+    if (!user || user.length === 0) {
       return res
         .status(400)
         .json({ message: "User does not exist, try signup" });
