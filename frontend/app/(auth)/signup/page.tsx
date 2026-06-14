@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import storeToken from "@/app/actions/auth";
 import Link from "next/link";
 
-export default function Login() {
-  const router = useRouter();
+export default function Signup() {
+  //   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,21 +26,37 @@ export default function Login() {
       },
     );
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     await storeToken(data.accessToken, data.refreshToken);
     if (response.ok) {
-      // alert("Login successful");
-      router.push("/dashboard");
+      alert("Login successful");
+      
     } else {
       alert(`Error: ${data.message}`);
     }
   };
+  const handleClick = () => {};
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Welcome Back</h2>
 
         {error && <div style={styles.error}>{error}</div>}
+
+        <div style={styles.inputGroup}>
+          <label htmlFor="email" style={styles.label}>
+            Name
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="John Doe"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isLoading}
+            style={styles.input}
+          />
+        </div>
 
         <div style={styles.inputGroup}>
           <label htmlFor="email" style={styles.label}>
@@ -75,9 +92,12 @@ export default function Login() {
           {isLoading ? "Signing in..." : "Sign In"}
         </button>
         <p className="py-[10px]">
-          Don't have an account?{" "}
-          <Link href={"/signup"} className="text-blue-700">
-            Signup
+          Already have an account?{" "}
+          <Link
+            href={"/login"}
+            className="text-blue-700"
+          >
+            Login
           </Link>
         </p>
       </form>
