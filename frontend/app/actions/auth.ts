@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 export default async function storeToken(
   accessToken: string,
   refreshToken: string,
+  role: string,
 ) {
   const cookieStore = await cookies();
   cookieStore.set("auth_token", accessToken, {
@@ -20,6 +21,12 @@ export default async function storeToken(
     sameSite: "lax", // Protects against CSRF attacks
     maxAge: 60 * 60 * 24 * 30, // Cookie expires in 30 days (in seconds)
     path: "/", // Accessible across the entire site
+  });
+  cookieStore.set("user_role", role, {
+    httpOnly: false,
+    sameSite: "lax",
+    maxAge: 60 * 30,
+    path: "/",
   });
 }
 
