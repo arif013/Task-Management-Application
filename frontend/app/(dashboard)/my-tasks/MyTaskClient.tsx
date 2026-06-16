@@ -33,6 +33,9 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
     due_date: "",
   });
 
+  useEffect(() => {
+    setTasks(myTasks);
+  }, [myTasks]);
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -80,10 +83,8 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
 
   useEffect(() => {
     const fetchTasksWithStatus = async () => {
-      // const params = new URLSearchParams();
-      // if (statusChange) params.append("status", statusChange);
       const response = await changeStatus(statusChange);
-      console.log(`response`, response)
+      console.log(`response`, response);
       setTasks(response?.data?.tasks ?? []);
     };
     fetchTasksWithStatus();
@@ -94,6 +95,7 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
         <button
           className="bg-purple-600 text-white px-[20px] py-[10px] rounded-[10px] "
           onClick={() => {
+            setSelectedTask(null);
             setFormData({
               title: "",
               description: "",

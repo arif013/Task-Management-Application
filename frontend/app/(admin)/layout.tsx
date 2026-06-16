@@ -1,17 +1,24 @@
-import Sidebar from "./components/Sidebar";
 import Link from "next/link";
 import {
   LucideActivity,
   LucideSettings,
   LucideSquareDashedBottom,
   LucideLogOut,
+  LucideUser,
 } from "lucide-react";
-import logout from "@/app/actions/logout";
+import LogoutButton from "../components/LogoutButton";
+import Sidebar from "./components/Sidebar";
+import logout from "../actions/logout";
 
 const mobileNavItems = [
-  { name: "Dashboard", link: "/dashboard", icon: LucideSquareDashedBottom },
-  { name: "My Tasks", link: "/my-tasks", icon: LucideActivity },
-  { name: "Settings", link: "/settings", icon: LucideSettings },
+  {
+    name: "Dashboard",
+    link: "/admin/",
+    icon: LucideSquareDashedBottom,
+  },
+  { name: "Manage Users", link: "/admin/manage-users", icon: LucideUser },
+  { name: "Manage Tasks", link: "/admin/manage-tasks", icon: LucideActivity },
+  // { name: "Settings", link: "/admin/settings", icon: LucideSettings },
 ];
 
 export default function DashboardLayout({
@@ -22,7 +29,7 @@ export default function DashboardLayout({
       {/* Navbar */}
       <header className="fixed top-0 left-0 right-0 h-16 border-b bg-white z-50 mx-0 md:mx-[20px] my-0 md:my-[10px] rounded-none md:rounded-[10px] text-center flex items-center justify-center">
         <div>
-          <h2 className="text-lg md:text-xl font-bold">TaskFlow</h2>
+          <h2 className="text-lg md:text-xl font-bold">Task Manager</h2>
           <p className="hidden md:block text-sm text-gray-500">
             Manage your work efficiently
           </p>
@@ -53,10 +60,7 @@ export default function DashboardLayout({
           );
         })}
         <form action={logout}>
-          <button
-            type="submit"
-            className="flex flex-col items-center text-[10px] text-gray-500 hover:text-red-500"
-          >
+          <button className="flex flex-col items-center text-[10px] text-gray-500 hover:text-red-500">
             <LucideLogOut size={20} />
             <span>Logout</span>
           </button>

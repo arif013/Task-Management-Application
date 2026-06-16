@@ -65,14 +65,15 @@ const getTasks = async (req, res) => {
       `;
 
       // Get total count of all user tasks
-      totalCountResult = await client`
+      [totalCountResult] = await client`
         SELECT COUNT(*) as total FROM tasks 
         WHERE created_by = ${userId};
       `;
     }
+    // console.log(`totalCount:`, totalCountResult);
 
     // 3. Extract total number and calculate total pages
-    const totalTasks = parseInt(totalCountResult[0].total);
+    const totalTasks = parseInt(totalCountResult.total);
     const totalPages = Math.ceil(totalTasks / limit);
 
     return res.status(200).json({
@@ -85,6 +86,7 @@ const getTasks = async (req, res) => {
         limit,
       },
       tasks: fetchTasks,
+      totalCount: totalCountResult,
     });
   } catch (error) {
     console.error("Fetch tasks failed", error);
@@ -111,9 +113,8 @@ const getSingleTask = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      success: true,
-      message: "Task fetched successfully!!",
-      task: fetchTaskById,
+      success: false,
+      message: "Server error!!",
     });
   }
 };
@@ -154,4 +155,61 @@ const updateTask = async (req, res) => {
   }
 };
 
-export { createTask, getTasks, getSingleTask, updateTask };
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTask = await client`
+        DELETE FROM tasks
+        WHERE id=${id}
+        RETURNING *;
+    `;
+    if (deletedTask.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found!!",
+        task: deletedTask[0],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Task deleted successfully!!`,
+      task: deletedTask[0],
+    });
+  } catch (error) {
+    console.error("Could not delete", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const taskCount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const [taskCount] = await client`
+      SELECT COUNT(*) FROM tasks 
+      WHERE id=${userId};
+    `;
+    console.log("tasks count ", taskCount);
+    if (!taskCount) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Tasks not found!!" });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Task count fetched successfully",
+      data: taskCount,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error!!" });
+  }
+};
+
+export {
+  createTask,
+  getTasks,
+  getSingleTask,
+  updateTask,
+  deleteTask,
+  taskCount,
+};

@@ -29,7 +29,11 @@ export default function Login() {
     await storeToken(data.accessToken, data.refreshToken);
     if (response.ok) {
       // alert("Login successful");
-      router.push("/dashboard");
+      if (data.user.role === "admin") {
+        router.push("/admin")
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       alert(`Error: ${data.message}`);
     }

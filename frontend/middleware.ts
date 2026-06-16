@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard","/my-tasks","/settings", "/admin", "/admin/manage-users", "/admin/manage-tasks"];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   );
 
   if (isProtected && !token) {
-    const loginUrl = new URL("login", request.url);
+    const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
   NextResponse.next();

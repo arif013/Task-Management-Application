@@ -4,6 +4,7 @@ import {
   LucideActivity,
   LucideSettings,
   LucideSquareDashedBottom,
+  LucideUser,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,17 +13,22 @@ import Logout from "@/app/components/LogoutButton";
 const navItems = [
   {
     name: "Dashboard",
-    link: "/dashboard",
+    link: "/admin",
     icon: LucideSquareDashedBottom,
   },
   {
-    name: "My Tasks",
-    link: "/my-tasks",
+    name: "Manage Users",
+    link: "/admin/manage-users",
+    icon: LucideUser,
+  },
+  {
+    name: "Manage Tasks",
+    link: "/admin/manage-tasks",
     icon: LucideActivity,
   },
   // {
   //   name: "Settings",
-  //   link: "/settings",
+  //   link: "/admin/settings",
   //   icon: LucideSettings,
   // },
 ];
