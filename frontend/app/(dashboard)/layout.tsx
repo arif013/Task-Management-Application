@@ -4,9 +4,8 @@ import {
   LucideActivity,
   LucideSettings,
   LucideSquareDashedBottom,
-  LucideLogOut,
 } from "lucide-react";
-import logout from "@/app/actions/logout";
+import MobileLogout from "@/app/components/MobileLogout";
 
 const mobileNavItems = [
   { name: "Dashboard", link: "/dashboard", icon: LucideSquareDashedBottom },
@@ -52,15 +51,7 @@ export default function DashboardLayout({
             </Link>
           );
         })}
-        <form action={logout}>
-          <button
-            type="submit"
-            className="flex flex-col items-center text-[10px] text-gray-500 hover:text-red-500"
-          >
-            <LucideLogOut size={20} />
-            <span>Logout</span>
-          </button>
-        </form>
+        <MobileLogout />
       </nav>
     </div>
   );

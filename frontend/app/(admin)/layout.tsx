@@ -1,14 +1,11 @@
 import Link from "next/link";
 import {
   LucideActivity,
-  LucideSettings,
   LucideSquareDashedBottom,
-  LucideLogOut,
   LucideUser,
 } from "lucide-react";
-import LogoutButton from "../components/LogoutButton";
 import Sidebar from "./components/Sidebar";
-import logout from "../actions/logout";
+import MobileLogout from "../components/MobileLogout";
 
 const mobileNavItems = [
   {
@@ -59,12 +56,7 @@ export default function DashboardLayout({
             </Link>
           );
         })}
-        <form action={logout}>
-          <button className="flex flex-col items-center text-[10px] text-gray-500 hover:text-red-500">
-            <LucideLogOut size={20} />
-            <span>Logout</span>
-          </button>
-        </form>
+        <MobileLogout />
       </nav>
     </div>
   );

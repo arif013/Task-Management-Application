@@ -14,28 +14,34 @@ export default function Login() {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    setIsLoading(true);
+    setError("");
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
         },
-        body: JSON.stringify({ email, password }),
-      },
-    );
-    const data = await response.json();
-    // console.log(data);
-    await storeToken(data.accessToken, data.refreshToken);
-    if (response.ok) {
-      // alert("Login successful");
-      if (data.user.role === "admin") {
-        router.push("/admin")
+      );
+      const data = await response.json();
+      await storeToken(data.accessToken, data.refreshToken);
+      if (response.ok) {
+        if (data.user.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
-        router.push("/dashboard");
+        setError(data.message);
       }
-    } else {
-      alert(`Error: ${data.message}`);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
   return (

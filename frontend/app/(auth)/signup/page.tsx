@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import storeToken from "@/app/actions/auth";
 import Link from "next/link";
 
 export default function Signup() {
-  //   const router = useRouter();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,27 +15,36 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    setIsLoading(true);
+    setError("");
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, email, password }),
         },
-        body: JSON.stringify({ email, password }),
-      },
-    );
-    const data = await response.json();
-    console.log(data);
-    await storeToken(data.accessToken, data.refreshToken);
-    if (response.ok) {
-      alert("Login successful");
-      
-    } else {
-      alert(`Error: ${data.message}`);
+      );
+      const data = await response.json();
+      if (response.ok) {
+        await storeToken(data.accessToken, data.refreshToken);
+        if (data.user?.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
+      } else {
+        setError(data.message);
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
-  const handleClick = () => {};
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -89,7 +98,7 @@ export default function Signup() {
         </div>
 
         <button type="submit" disabled={isLoading} style={styles.button}>
-          {isLoading ? "Signing in..." : "Sign In"}
+          {isLoading ? "Creating account..." : "Sign Up"}
         </button>
         <p className="py-[10px]">
           Already have an account?{" "}

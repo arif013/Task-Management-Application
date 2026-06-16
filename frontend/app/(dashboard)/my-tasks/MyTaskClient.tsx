@@ -5,10 +5,9 @@ import {
   deleteTask,
   updateTask,
 } from "@/app/actions/TaskAction";
-import { fetchWithAuth } from "@/app/lib/api";
 import { useRouter } from "next/navigation";
-// import { cookies } from "next/headers";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import LoadingButton from "@/app/components/LoadingButton";
 
 interface Task {
   id: number;
@@ -25,6 +24,8 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [statusChange, setStatusChange] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -38,8 +39,8 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
   }, [myTasks]);
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // if (!selectedTask) return;
     let response;
 
     if (selectedTask) {
@@ -47,18 +48,16 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
     } else {
       response = await createTask(formData);
     }
-    // console.log('response',response)
 
     if (!response) {
       console.error("Failed to refresh token or fetch failed");
+      setIsSubmitting(false);
       return;
     }
 
     if (response) {
       setIsOpen(false);
-
-      // easiest refresh
-      // window.location.reload();
+      setIsSubmitting(false);
       router.refresh();
     }
   };
@@ -70,14 +69,16 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
 
     if (!confirmed) return;
 
+    setDeletingId(taskId);
     const response = await deleteTask(taskId);
 
     if (!response) {
       alert("Failed to delete task");
+      setDeletingId(null);
       return;
     }
 
-    // window.location.reload();
+    setDeletingId(null);
     router.refresh();
   };
 
@@ -182,12 +183,14 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
                   </button>
                 </td>
                 <td className="px-6 py-4">
-                  <button
+                  <LoadingButton
                     onClick={() => handleDelete(task.id)}
-                    className="rounded bg-red-500 px-3 py-1 text-white"
+                    isLoading={deletingId === task.id}
+                    loadingText="Deleting..."
+                    className="rounded bg-red-500 px-3 py-1 text-white disabled:opacity-60"
                   >
                     Delete
-                  </button>
+                  </LoadingButton>
                 </td>
               </tr>
             ))}
@@ -239,12 +242,14 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
               >
                 Edit
               </button>
-              <button
+              <LoadingButton
                 onClick={() => handleDelete(task.id)}
-                className="flex-1 rounded bg-red-500 py-2 text-sm text-white"
+                isLoading={deletingId === task.id}
+                loadingText="Deleting..."
+                className="flex-1 rounded bg-red-500 py-2 text-sm text-white disabled:opacity-60"
               >
                 Delete
-              </button>
+              </LoadingButton>
             </div>
           </div>
         ))}
@@ -325,12 +330,14 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
                 }
               />
 
-              <button
+              <LoadingButton
                 type="submit"
-                className="w-full rounded bg-purple-600 py-2 text-white"
+                isLoading={isSubmitting}
+                loadingText={selectedTask ? "Updating..." : "Creating..."}
+                className="w-full rounded bg-purple-600 py-2 text-white disabled:opacity-60"
               >
                 {selectedTask ? "Update Task" : "Create Task"}
-              </button>
+              </LoadingButton>
             </form>
           </div>
         </div>
