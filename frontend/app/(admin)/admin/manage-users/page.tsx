@@ -23,7 +23,9 @@ async function page() {
   }
   return (
     <div>
-      <h1>Maange Users</h1>
+      <div className="flex items-center justify-center py-[10px] bg-white rounded-[10px] mb-[10px]">
+        <h1 className="text-[24px] font-bold">Manage Users</h1>
+      </div>
       <ManageUsersClient users={userData.data} />
     </div>
   );
