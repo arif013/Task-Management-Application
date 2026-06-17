@@ -1,6 +1,8 @@
 import { fetchWithAuth } from "@/app/lib/api";
 import AdminDashboard from "./AdminDashboard";
 
+export const dynamic = 'force-dynamic';
+
 async function page() {
   let userData, taskData;
   try {

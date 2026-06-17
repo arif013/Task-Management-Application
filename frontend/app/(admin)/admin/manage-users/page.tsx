@@ -1,6 +1,8 @@
 import { fetchWithAuth } from "@/app/lib/api";
 import ManageUsersClient from "./ManageUsersClient";
 
+export const dynamic = "force-dynamic";
+
 async function page() {
   let userData;
   try {
