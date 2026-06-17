@@ -16,7 +16,11 @@ interface Task {
   status: string;
   due_date: Date;
   priority: string;
+  created_at: Date;
 }
+
+type SortField = "due_date" | "priority" | "created_at";
+type SortOrder = "asc" | "desc";
 
 export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
   const router = useRouter();
@@ -24,6 +28,9 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [statusChange, setStatusChange] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState<SortField>("created_at");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
@@ -90,6 +97,31 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
     };
     fetchTasksWithStatus();
   }, [statusChange]);
+
+  const priorityWeight: Record<string, number> = {
+    Low: 1,
+    Medium: 2,
+    High: 3,
+  };
+
+  const filteredTasks = tasks
+    .filter((task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    )
+    .sort((a, b) => {
+      let cmp = 0;
+      if (sortField === "due_date") {
+        cmp =
+          new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      } else if (sortField === "priority") {
+        cmp = (priorityWeight[a.priority] ?? 0) - (priorityWeight[b.priority] ?? 0);
+      } else {
+        cmp =
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+      return sortOrder === "asc" ? cmp : -cmp;
+    });
+
   return (
     <div className="mx-[10px] bg-white h-screen rounded-[10px] py-[10px] px-[10px]">
       <div className="flex justify-end my-[20px]">
@@ -110,10 +142,33 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
           + Create Task
         </button>
       </div>
-      <div className="flex items-center gap-[10px] my-[10px]">
-        <label>Filter</label>
+      <div className="flex flex-wrap items-center gap-[10px] my-[10px]">
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-[250px] rounded border px-3 py-2 text-sm outline-none focus:border-purple-500"
+        />
         <select
-          className="w-[200px] rounded border-[1px] "
+          className="w-[180px] rounded border px-3 py-2 text-sm outline-none"
+          value={`${sortField}-${sortOrder}`}
+          onChange={(e) => {
+            const [field, order] = e.target.value.split("-") as [SortField, SortOrder];
+            setSortField(field);
+            setSortOrder(order);
+          }}
+        >
+          <option value="created_at-desc">Newest First</option>
+          <option value="created_at-asc">Oldest First</option>
+          <option value="due_date-asc">Due Date: Earliest</option>
+          <option value="due_date-desc">Due Date: Latest</option>
+          <option value="priority-desc">Priority: Highest</option>
+          <option value="priority-asc">Priority: Lowest</option>
+        </select>
+        <label className="text-sm text-gray-500">Status:</label>
+        <select
+          className="w-[160px] rounded border px-3 py-2 text-sm outline-none"
           value={statusChange}
           onChange={(e) => setStatusChange(e.target.value)}
         >
@@ -139,7 +194,7 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 text-gray-600">
-            {tasks.map((task, index: number) => (
+            {filteredTasks.map((task, index: number) => (
               <tr key={index} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 font-medium text-gray-900">
                   {task.title}
@@ -200,7 +255,7 @@ export default function MyTaskClient({ myTasks }: { myTasks: Task[] }) {
 
       {/* Mobile Cards */}
       <div className="md:hidden space-y-3">
-        {myTasks.map((task, index: number) => (
+        {filteredTasks.map((task, index: number) => (
           <div key={index} className="bg-white rounded-lg border p-4 space-y-2">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold text-gray-900">{task.title}</h3>
