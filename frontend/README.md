@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Manager — Frontend
 
-## Getting Started
+Next.js 16 dashboard for managing tasks with role-based access (member/admin). Features server-side rendering, JWT auth, and a responsive sidebar layout.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 18+
+- Backend server running on `http://localhost:5000`
+
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd frontend
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the frontend root:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api
+```
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # starts on http://localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Member routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route          | Description          |
+| -------------- | -------------------- |
+| `/dashboard`   | Task statistics      |
+| `/my-tasks`    | CRUD tasks + filter  |
+| `/settings`    | User settings        |
 
-## Deploy on Vercel
+### Admin routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Route                     | Description          |
+| ------------------------- | -------------------- |
+| `/admin`                  | Admin dashboard      |
+| `/admin/manage-users`     | View all users       |
+| `/admin/manage-tasks`     | Manage all tasks     |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Auth
+
+| Route     | Description |
+| --------- | ----------- |
+| `/login`  | Sign in     |
+| `/signup` | Register    |
+
+## Running Tests
+
+```bash
+npm test
+```
+
+No tests configured yet.
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
+- Lucide icons
+
+## License
+
+MIT
