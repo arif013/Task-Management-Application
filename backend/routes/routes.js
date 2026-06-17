@@ -28,7 +28,7 @@ router.get("/admin/all-tasks", authenticate, authorize('admin'), getAllTasks)
 router.post("/tasks", authenticate, createTask);
 router.get("/tasks", authenticate, getTasks);
 router.get("/tasks/:id", authenticate, getSingleTask);
-router.get("/tasks/task-count", authenticate, taskCount);
+// router.get("/tasks/task-count", authenticate, taskCount);
 router.patch("/tasks/:id", authenticate, updateTask);
 router.delete("/tasks/:id", authenticate, deleteTask);
 // router.get("/tasks?status=")
