@@ -30,7 +30,7 @@ export default function Signup() {
       );
       const data = await response.json();
       if (response.ok) {
-        await storeToken(data.accessToken, data.refreshToken);
+        await storeToken(data.accessToken, data.refreshToken, data.user.role);
         if (data.user?.role === "admin") {
           router.push("/admin");
         } else {
@@ -102,10 +102,7 @@ export default function Signup() {
         </button>
         <p className="py-[10px]">
           Already have an account?{" "}
-          <Link
-            href={"/login"}
-            className="text-blue-700"
-          >
+          <Link href={"/login"} className="text-blue-700">
             Login
           </Link>
         </p>

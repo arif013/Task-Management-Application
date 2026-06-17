@@ -1,4 +1,4 @@
-"use server"
+
 
 import { cookies } from "next/headers";
 import { refreshAccessToken } from "../actions/auth";

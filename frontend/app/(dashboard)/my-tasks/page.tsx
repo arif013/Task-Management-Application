@@ -1,7 +1,9 @@
-'use server'
+
 import { redirect } from "next/navigation";
 import MyTaskClient from "./MyTaskClient";
 import { fetchWithAuth } from "@/app/lib/api";
+
+export const dynamic = "force-dynamic";
 
 export default async function MyTask() {
   const fetchTasks = await fetchWithAuth(

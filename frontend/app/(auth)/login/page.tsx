@@ -28,7 +28,7 @@ export default function Login() {
         },
       );
       const data = await response.json();
-      console.log(`data in login`,data)
+      // console.log(`data in login`,data)
       await storeToken(data.accessToken, data.refreshToken, data.user.role);
       if (response.ok) {
         if (data.user.role === "admin") {

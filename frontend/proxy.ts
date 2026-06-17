@@ -4,7 +4,7 @@ import path from "path";
 const protectedRoutes = ["/dashboard", "/my-tasks", "/settings"];
 const adminRoutes = ["/admin", "/admin/manage-users", "/admin/manage-tasks"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const role = request.cookies.get("user_role")?.value;
   const token = request.cookies.get("auth_token")?.value;
   const { pathname } = request.nextUrl;
